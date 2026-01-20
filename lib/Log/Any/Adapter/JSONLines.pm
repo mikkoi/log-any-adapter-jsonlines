@@ -259,7 +259,7 @@ sub _prepare_log_entry {
     # => text goes to "message" and hash properties are promoted
     # to top level.
     # (If user is using logging context, Log::Any places them
-    # to the last item @arts. If there already is a HASH, they are
+    # as the last item in @args. If there already is a HASH, they are
     # added to it.
     # In any other case, all @items are pushed to array
     # in JSON property "messages".
