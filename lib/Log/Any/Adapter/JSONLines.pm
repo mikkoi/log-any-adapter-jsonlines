@@ -59,7 +59,7 @@ It works with
 L<Log::Any Context|https://metacpan.org/pod/Log::Any#Log-context-data>
 data as well as any other structured data.
 
-You can "hook into" to printing process right before the JSON
+You can "hook into" the printing process right before the JSON
 is created if you need to add or remove properties or
 alter properties, for example, mask values.
 
