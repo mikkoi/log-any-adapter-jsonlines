@@ -9,6 +9,7 @@ use utf8;
 use Test2::V0;
 set_encoding('utf8');
 
+use Path::Tiny qw( path );
 use Log::Any::Adapter::JSONLines;
 
 # Test error handling for invalid file parameter references
@@ -77,9 +78,8 @@ subtest 'valid file reference - GLOB ref (filehandle)' => sub {
 };
 
 subtest 'valid file reference - string path' => sub {
-    use Path::Tiny qw( path );
     my $tempfile = Path::Tiny->tempfile;
-    my $tempfile_path = q{}.$tempfile->path;
+    my $tempfile_path = $tempfile->stringify;
     
     my $result = lives { Log::Any::Adapter::JSONLines->new(file => $tempfile_path) };
     ok($result, 'String file path should be accepted');
