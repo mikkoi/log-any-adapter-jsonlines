@@ -14,7 +14,7 @@ use Path::Tiny qw( path );
 
 # Test log level filtering
 # According to Log::Any documentation, log levels are (from lowest to highest):
-# trace (0), debug (1), info (2), notice (3), warning (4), error (5), critical (6), alert (7), emergency (8)
+# trace (0), debug (1), info (2), notice (3), warn (4), error (5), critical (6), alert (7), emergency (8)
 
 subtest 'log level filtering - warn level' => sub {
     my $tempfile = Path::Tiny->tempfile;
