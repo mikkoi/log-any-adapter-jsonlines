@@ -266,7 +266,6 @@ sub structured {
     return;
 }
 
-my %reserved_keys = map { $_ => 1 } qw(time level category msg);
 sub _prepare_log_entry {
     my ($self, $level, $category, @args) = @_;
 
