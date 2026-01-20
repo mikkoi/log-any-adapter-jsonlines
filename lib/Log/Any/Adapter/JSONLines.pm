@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.008_006;
 
-# ABSTRACT: One-line JSON logging of arbitrary structured data n JSON Lines format.
+# ABSTRACT: One-line JSON logging of arbitrary structured data in JSON Lines format.
 
 our $VERSION = '0.001';
 
