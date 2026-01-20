@@ -22,6 +22,9 @@ BEGIN {
 use Log::Any qw($log);
 use Log::Any::Adapter 'JSONLines', file => $tempfile_path;
 
+# Constant for test timestamp
+use constant TEST_TIMESTAMP => 1234567890;
+
 # last line logged
 sub last_line {
     my $line = (path($tempfile_path)->lines_utf8({ chomp => 1 }))[-1];
@@ -132,15 +135,12 @@ subtest 'structure' => sub {
     );
 };
 
-our $hook_called;
-our @hook_execution_order;
-
 subtest 'hooks' => sub {
     # Test that a single hook is called and can modify the log entry
     my $tempfile_hooks = Path::Tiny->tempfile;
     my $tempfile_hooks_path = q{}.$tempfile_hooks->path;
     
-    $hook_called = 0;
+    my $hook_called = 0;
     my $add_hook_data = sub {
         my ($level, $category, $log_entry) = @_;
         $hook_called++;
@@ -150,7 +150,6 @@ subtest 'hooks' => sub {
         return;
     };
     
-    require Log::Any::Adapter;
     Log::Any::Adapter->set('JSONLines', 
         file => $tempfile_hooks_path,
         hooks => {
@@ -183,7 +182,7 @@ subtest 'multiple hooks in order' => sub {
     my $tempfile_multi = Path::Tiny->tempfile;
     my $tempfile_multi_path = q{}.$tempfile_multi->path;
     
-    @hook_execution_order = ();
+    my @hook_execution_order = ();
     
     my $first_hook = sub {
         my ($level, $category, $log_entry) = @_;
@@ -206,7 +205,6 @@ subtest 'multiple hooks in order' => sub {
         return;
     };
     
-    require Log::Any::Adapter;
     Log::Any::Adapter->set('JSONLines',
         file => $tempfile_multi_path,
         hooks => {
@@ -244,14 +242,13 @@ subtest 'hooks can transform log entry' => sub {
         my ($level, $category, $log_entry) = @_;
         # Rename message to msg
         $log_entry->{msg} = delete $log_entry->{message};
-        # Add timestamp
-        $log_entry->{ts} = 1234567890;
+        # Add timestamp (using constant for test reproducibility)
+        $log_entry->{ts} = TEST_TIMESTAMP;
         # Add level abbreviation
         $log_entry->{lvl} = $level;
         return;
     };
     
-    require Log::Any::Adapter;
     Log::Any::Adapter->set('JSONLines',
         file => $tempfile_transform_path,
         hooks => {
@@ -269,7 +266,7 @@ subtest 'hooks can transform log entry' => sub {
         $result,
         {
             msg => 'original message',
-            ts => 1234567890,
+            ts => TEST_TIMESTAMP,
             lvl => 'warning',
         },
         'hook transformed the log entry (renamed field, added fields)',
@@ -289,7 +286,6 @@ subtest 'hooks with structured data' => sub {
         return;
     };
     
-    require Log::Any::Adapter;
     Log::Any::Adapter->set('JSONLines',
         file => $tempfile_struct_path,
         hooks => {
