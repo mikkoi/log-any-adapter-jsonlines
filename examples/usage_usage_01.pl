@@ -31,9 +31,16 @@ sub main {
 
     # $log->debugf('Create account: %s', '12345', {user=>'Smith'});
 
+    # $log->context->{user} = 'Smith';
+    # $log->context->{nr} = '12345';
+    # $log->debugf('Create account: %s', '12345', {user=>'Smith'});
+
     $log->context->{user} = 'Smith';
     $log->context->{nr} = '12345';
-    $log->debugf('Create account: %s', '12345', {user=>'Smith'});
+    $log->debug({user=>'Johnson'});
+
+    # $log->debug('Person:', sub { return 'Lastname, Firstname'; });
+
     return 0;
 }
 

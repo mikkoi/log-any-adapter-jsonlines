@@ -182,6 +182,25 @@ about redundant argument in sprintf.
 
 However, Log::Any context will work as expected.
 
+Other special cases are:
+
+    use Log::Any qw( $log );
+    $log->debug([ 1, 2, 3, 4, 5 ]);
+    $log->debug(sub { return "Lastname, Firstname"; });
+    $log->debug("Person:", sub { return "Lastname, Firstname"; });
+
+    $log->context->{user} = 'Smith';
+    $log->context->{nr} = '12345';
+    $log->debug({user=>'Johnson'});
+
+Results with:
+
+    {"messages":[1,2,3,4,5]}
+    {"message":"Lastname, Firstname"}
+    {"messages":["Person:","Lastname, Firstname"]}
+
+    {"nr":"12345","user":"Johnson"}
+
 
 =head1 PARAMETERS
 
@@ -267,10 +286,10 @@ sub _prepare_log_entry {
     ## no critic (ControlStructures::ProhibitCascadingIfElse)
     if ( @args == 1 && ref $args[0] eq q{} ) {
         $log_entry{message} = $args[0];
-    } elsif ( @args == 1  && (ref $args[0] eq 'HASH' || ref $args[0] eq 'ARRAY') ) {
+    } elsif ( @args == 1  && ref $args[0] eq 'HASH' ) {
         %log_entry = ( %log_entry, %{ $args[0] } );
-    } elsif ( @args == 1  && ref $args[0] eq 'CODE' ) {
-        $log_entry{message} = $args[0]->();
+    } elsif ( @args == 1 && ref $args[0] eq q{ARRAY} ) {
+        $log_entry{messages} = $args[0];
     } elsif ( @args == 2 && ref $args[0] eq q{} && ref $args[1] eq 'HASH' ) {
         $log_entry{message} = $args[0];
         %log_entry = ( %log_entry, %{ $args[1] } );

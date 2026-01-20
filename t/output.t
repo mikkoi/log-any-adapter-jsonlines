@@ -83,6 +83,29 @@ subtest 'structure' => sub {
         },
         'structures',
     );
+
+    $log->debug('hello, world', sub { 'Tester'; });
+    is(
+        last_line(),
+        {
+            messages => [
+                'hello, world',
+                'Tester',
+            ],
+        },
+        'plain string, hash, code and array',
+    );
+    $log->debug(sub { 'Tester'; }, 'hello, world');
+    is(
+        last_line(),
+        {
+            messages => [
+                'Tester',
+                'hello, world',
+            ],
+        },
+        'plain string, hash, code and array',
+    );
     $log->debug('hello, world', { age=>123, name=>'Smith' }, sub { 'Tester'; }, [1,2,3]);
     is(
         last_line(),
@@ -98,6 +121,14 @@ subtest 'structure' => sub {
             ],
         },
         'plain string, hash, code and array',
+    );
+    $log->debug([1,2,3]);
+    is(
+        last_line(),
+        {
+            messages => [ 1,2,3, ],
+        },
+        'array',
     );
 };
 
