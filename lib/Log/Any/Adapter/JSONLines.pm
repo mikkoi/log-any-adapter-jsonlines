@@ -241,7 +241,6 @@ Default: UTF-8
 
 =cut
 
-my $trace_level = Log::Any::Adapter::Util::numeric_level('trace');
 my $DEFAULT_CANONICAL = 0;
 my $DEFAULT_LOG_LEVEL = Log::Any::Adapter::Util::numeric_level('trace');
 my $DEFAULT_FILE_HANDLE = \*STDOUT;
