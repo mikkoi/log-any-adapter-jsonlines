@@ -17,3 +17,4 @@ nytprof.out
 *.bs
 /_eumm/
 /Log-Any-Adapter-JSONLines-*
+/local_lib/
