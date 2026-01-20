@@ -386,10 +386,6 @@ foreach my $method ( Log::Any::Adapter::Util::detection_methods() ) {
         my ($level, $category, $log_entry) = @_;
         my $last_nums = ($log_entry->{card} =~ m/^[0-9]{12}([0-9]{4})$/msx)[0];
         $log_entry->{card} = q{XXXX XXXX XXXX } . $last_nums;
-        $log_entry->{epoch}  = time;
-        $log_entry->{lvl} = $level;
-        $log_entry->{cat} = $category;
-        $log_entry->{msg} = delete $log_entry->{message};
         return;
     }
 
