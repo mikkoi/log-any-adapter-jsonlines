@@ -15,7 +15,6 @@ use File::Spec ();
 
 # Add t/lib to @INC
 use FindBin 1.51 qw( $RealBin );
-use File::Spec;
 my $lib_path;
 BEGIN {
     $lib_path = File::Spec->catdir(($RealBin =~ /(.+)/msx)[0], q{.}, 'lib');
@@ -51,7 +50,7 @@ for my $package (@packages) {
         local $EVAL_ERROR = $EVAL_ERROR;
         my $r = eval { load $package; 1; };
         if( ! $r || $EVAL_ERROR ) {
-            my $e = 'Failed to package \'%s\', error: %s';
+            my $e = 'Failed to load package \'%s\', error: %s';
             diag( sprintf $e, $package, $EVAL_ERROR );
             fail("Unable to load package $package");
         } else {
