@@ -285,7 +285,7 @@ sub _prepare_log_entry {
     if ( @args == 1 && ref $args[0] eq q{} ) {
         $log_entry{message} = $args[0];
     } elsif ( @args == 1  && ref $args[0] eq 'HASH' ) {
-        %log_entry = ( %log_entry, %{ $args[0] } );
+        %log_entry = %{ $args[0] };
     } elsif ( @args == 1 && ref $args[0] eq q{ARRAY} ) {
         $log_entry{messages} = $args[0];
     } elsif ( @args == 2 && ref $args[0] eq q{} && ref $args[1] eq 'HASH' ) {
