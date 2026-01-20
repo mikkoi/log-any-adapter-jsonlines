@@ -36,6 +36,8 @@ sub main {
     $log->context->{user} = 'Smith';
     $log->context->{nr} = '12345';
     $log->debug({user=>'Johnson'});
+    $log->debug();
+    $log->debug({ muu => 54321 });
 
     # $log->debug('Person:', sub { return 'Lastname, Firstname'; });
 

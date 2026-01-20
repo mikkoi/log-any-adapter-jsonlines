@@ -58,7 +58,7 @@ subtest 'structure' => sub {
         },
         'plain string with structure',
     );
-    $log->debug({ age=>123, name=>'Smith' });
+    $log->debug({ age=>'123', name=>'Smith' });
     is(
         last_line(),
         {
