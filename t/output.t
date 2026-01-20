@@ -81,7 +81,7 @@ subtest 'structure' => sub {
                 }
             ],
         },
-        'structures',
+        'two structures',
     );
 
     $log->debug('hello, world', sub { 'Tester'; });
@@ -93,7 +93,7 @@ subtest 'structure' => sub {
                 'Tester',
             ],
         },
-        'plain string, hash, code and array',
+        'plain string and code',
     );
     $log->debug(sub { 'Tester'; }, 'hello, world');
     is(
@@ -104,7 +104,7 @@ subtest 'structure' => sub {
                 'hello, world',
             ],
         },
-        'plain string, hash, code and array',
+        'code and plain string',
     );
     $log->debug('hello, world', { age=>123, name=>'Smith' }, sub { 'Tester'; }, [1,2,3]);
     is(
@@ -128,7 +128,7 @@ subtest 'structure' => sub {
         {
             messages => [ 1,2,3, ],
         },
-        'array',
+        'only array',
     );
 };
 
