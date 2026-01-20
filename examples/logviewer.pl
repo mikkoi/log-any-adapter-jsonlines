@@ -188,7 +188,7 @@ B<logviewer> shows JSON log files.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2023 Mikko Koivunalho
+Copyright (C) 2023-2026 Mikko Koivunalho
 Artistic License 2.0
 https://www.perlfoundation.org/artistic-license-20.html
 
