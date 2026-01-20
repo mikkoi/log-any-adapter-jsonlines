@@ -151,7 +151,7 @@ Options:
 
 =head1 OPTIONS
 
-=over 8
+=over
 
 =item B<--help>
 
@@ -169,8 +169,6 @@ Prints the version and exits.
 
 Show messages up to this level.
 Default: DEBUG
-
-=back
 
 =item B<--category>
 
