@@ -22,9 +22,6 @@ BEGIN {
 use Log::Any qw($log);
 use Log::Any::Adapter 'JSONLines', file => $tempfile_path;
 
-# Constant for test timestamp
-use constant TEST_TIMESTAMP => 1234567890;
-
 # last line logged
 sub last_line {
     my $line = (path($tempfile_path)->lines_utf8({ chomp => 1 }))[-1];
@@ -238,12 +235,14 @@ subtest 'hooks can transform log entry' => sub {
     my $tempfile_transform = Path::Tiny->tempfile;
     my $tempfile_transform_path = q{}.$tempfile_transform->path;
     
+    my $TEST_TIMESTAMP = 1234567890;
+    
     my $transform_hook = sub {
         my ($level, $category, $log_entry) = @_;
         # Rename message to msg
         $log_entry->{msg} = delete $log_entry->{message};
-        # Add timestamp (using constant for test reproducibility)
-        $log_entry->{ts} = TEST_TIMESTAMP;
+        # Add timestamp (using variable for test reproducibility)
+        $log_entry->{ts} = $TEST_TIMESTAMP;
         # Add level abbreviation
         $log_entry->{lvl} = $level;
         return;
@@ -266,7 +265,7 @@ subtest 'hooks can transform log entry' => sub {
         $result,
         {
             msg => 'original message',
-            ts => TEST_TIMESTAMP,
+            ts => $TEST_TIMESTAMP,
             lvl => 'warning',
         },
         'hook transformed the log entry (renamed field, added fields)',
@@ -283,6 +282,7 @@ subtest 'hooks with structured data' => sub {
     my $enrich_hook = sub {
         my ($level, $category, $log_entry) = @_;
         $log_entry->{enriched} = 'yes';
+        $log_entry->{user} = 'Harry';
         return;
     };
     
@@ -304,7 +304,7 @@ subtest 'hooks with structured data' => sub {
         {
             message => 'error occurred',
             code => 500,
-            user => 'john',
+            user => 'Harry',
             enriched => 'yes',
         },
         'hook works with structured logging data',
