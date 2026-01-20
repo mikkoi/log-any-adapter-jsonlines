@@ -12,8 +12,6 @@ use Log::Any::Adapter( 'JSONLines',
 # ###################################################################
 # main
 sub main {
-    use Log::Any qw( $log );
-
     # $log->debug('Create account', { nr=>'12345', user=>'Smith'});
 
     # $log->context->{user} = 'Smith';
