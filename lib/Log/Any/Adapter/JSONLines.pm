@@ -400,7 +400,7 @@ This module is currently being developed so changes in the API are possible.
 
 =head1 THANKS
 
-Big thanks for L<Log::Any::Adapter::JSON> for being an inspiration
+Big thanks to L<Log::Any::Adapter::JSON> for being an inspiration
 and example for this module.
 
 
