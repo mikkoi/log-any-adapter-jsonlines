@@ -7,7 +7,7 @@ use 5.008_006;
 
 our $VERSION = '0.001';
 
-use Carp qw( croak confess );
+use Carp qw( croak );
 use JSON;
 
 use Log::Any::Adapter::Util 'make_method';
@@ -236,14 +236,14 @@ sub structured {
     my $log_entry = $self->_prepare_log_entry($level, $category, @args);
 
     if ( exists $self->{handle} ) {
-        print {$self->{handle}} $log_entry, "\n" or croak('Cannot write JSON');
+        print {$self->{handle}} $log_entry, "\n" or croak('Cannot write JSON to open handle');
     } else {
         open my $handle, ">>:encoding($self->{encoding})", $self->{file}
-            or croak("Cannot open file '$self->{file}' for appending");
+            or croak( sprintf 'Cannot open file "%s" for appending', $self->{file});
         $handle->autoflush;
         print {$handle} $log_entry, "\n"
-            or croak('Cannot write JSON to file "%s"', $self->{file});
-        close $handle or croak("Cannot close file '$self->{file}' after opening it");
+            or croak( sprintf 'Cannot write JSON to file "%s"', $self->{file});
+        close $handle or croak( sprintf 'Cannot close file "%s" after opening it', $self->{file});
     }
     return;
 }
@@ -299,8 +299,7 @@ sub init {
     if ( defined $self->{log_level} && $self->{log_level} =~ /\D/msx ) {
         my $numeric_level = Log::Any::Adapter::Util::numeric_level( $self->{log_level} );
         if ( ! defined $numeric_level ) {
-            require Carp;
-            Carp::croak ( sprintf 'Invalid log level "%s"', $self->{log_level} );
+            croak ( sprintf 'Invalid log level "%s"', $self->{log_level} );
         }
         $self->{log_level} = $numeric_level;
     } elsif ( ! defined $self->{log_level} ) {
@@ -312,17 +311,15 @@ sub init {
     if ( exists $self->{file} ) {
         my $ref = ref $self->{file};
         if ( $ref && $ref ne 'GLOB' ) {
-            require Carp;
-            Carp::croak ( sprintf 'Invalid file "%s"', $self->{file} );
+            croak ( sprintf 'Invalid file "%s"', $self->{file} );
         } elsif ( $ref ) {
             # File is an open filehandle
             $self->{handle} = $self->{file};
         } else {
             # A quick test to see we can open the file for writing.
             open my $handle, ">>:encoding($self->{encoding})", $self->{file}
-                or croak("Cannot open file '$self->{file}' for appending");
-            $handle->autoflush;
-            close $handle or croak("Cannot close file '$self->{file}' after opening it");
+                or croak( sprintf 'Cannot open file "%s" for appending', $self->{file});
+            close $handle or croak( sprintf 'Cannot close file "%s" after opening it', $self->{file});
         }
     } else {
         $self->{handle} = $DEFAULT_FILE_HANDLE;
