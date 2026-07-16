@@ -44,9 +44,8 @@ use parent 'Log::Any::Adapter::Base';
 
 =head1 DESCRIPTION
 
-You want to write the log messages as JSON Lines,
-
-We follow the L<JSON Lines|https://jsonlines.org/> text file format.
+You want to write the log messages as JSON according to
+the L<JSON Lines|https://jsonlines.org/> text file format.
 
 This L<Log::Any> adapter logs formatted messages and arbitrary structured
 data in a single line of JSON per entry. By default,
@@ -112,23 +111,44 @@ A situation can arise when you would like to modify
 the JSON right before it gets printed.
 
 You may pass a C<hooks> parameter to the constructor. It should be a hashref
-with a single key, C<before>, which should be an arrayref of coderefs.
+with keys C<before> and C<proxy>, which should be an arrayref of coderefs.
 Each coderef will be called with the C<level>, C<category>, and a hashref
 representing the log entry. The coderef may modify the log entry hashref
 in place. These will be executed in the order they are written.
 
+The C<proxy> hooks are executed in the logging proxy,
+class L<Log::Any::Proxy> or its child class.
+
+The hooks have different arguments.
+First three are same: B<level>, B<category> and B<data> (the log entry).
+The hook C<proxy> has an additional parameter: B<info>.
+This contains two keys: B<calling_sub> and B<proxy>.
+B<proxy> is a pointer to the Proxy class in which the hook
+is being executed and B<calling_sub> is the name of the subroutine
+in which the hook is being executed.
+B<calling_sub> is either trace|debug|info|fatal|... or their
+"f" (formatting) equivalent.
+
     use Log::Any::Adapter ('JSONLines', hooks => {
       before => [ \&add_pid, \&shorten ],
+      proxy  => [ \&add_location ],
     });
     sub add_pid {
-      my ($level, $category, $log_entry) = @_;
-      $log_entry->{pid} = $$;
+      my ($level, $category, $data) = @_;
+      $data->{pid} = $$;
       return;
     }
     sub shorten {
-        my ($level, $category, $log_entry) = @_;
-        $log_entry->{msg} = delete $log_entry->{message};
+        my ($level, $category, $data) = @_;
+        $data->{msg} = delete $data->{message};
         return;
+    }
+    sub add_location {
+        my ($level, $category, $data, $info) = @_;
+        my $frames = substr( $info->{calling_sub}, -1, 1 ) eq 'f' ? 2 : 1;
+        $data->{file} = (caller $frames)[1];
+        $data->{line} = (caller $frames)[2];
+        $data->{file} =~ s/\/home\/mikkoi\/tmp\/[\w-]+/\[..\]/gmsx;
     }
 
 =head2 Logging
