@@ -41,6 +41,16 @@ use parent 'Log::Any::Adapter::Base';
         canonical => 1,
     );
 
+    # JSONLines uses hooks:
+    use Log::Any::Adapter ('JSONLines', hooks => {
+      before => [ \&add_pid, ],
+    });
+    sub add_pid {
+      my ($level, $category, $data) = @_;
+      $data->{pid} = $$;
+      return;
+    }
+
 
 =head1 DESCRIPTION
 

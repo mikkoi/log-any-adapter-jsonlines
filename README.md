@@ -32,6 +32,16 @@ One-line JSON logging of arbitrary structured data in JSON Lines format.
         canonical => 1,
     );
 
+    # JSONLines uses hooks:
+    use Log::Any::Adapter ('JSONLines', hooks => {
+      before => [ \&add_pid, ],
+    });
+    sub add_pid {
+      my ($level, $category, $data) = @_;
+      $data->{pid} = $$;
+      return;
+    }
+
 
 ## INSTALLATION
 
