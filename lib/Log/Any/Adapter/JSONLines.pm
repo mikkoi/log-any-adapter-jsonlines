@@ -1,7 +1,7 @@
 package Log::Any::Adapter::JSONLines;
 use strict;
 use warnings;
-use 5.008_006;
+use 5.008_001;
 
 # ABSTRACT: One-line JSON logging of arbitrary structured data in JSON Lines format.
 
@@ -12,7 +12,8 @@ use JSON;
 
 use Log::Any::Adapter::Util 'make_method';
 
-use parent 'Log::Any::Adapter::Base';
+use Log::Any::Adapter::Base;
+our @ISA = qw/Log::Any::Adapter::Base/; ## no critic (ClassHierarchies::ProhibitExplicitISA)
 
 
 =pod
@@ -77,7 +78,7 @@ alter properties, for example, mask values.
 
 =head2 Perl Version
 
-Required perl: 5.8.6 or above.
+Required perl: 5.8.1 or above. Same as L<Log::Any>.
 
 This module uses L<JSON> (version 4.10 at the point of writing this document).
 JSON uses L<JSON::XS> as its backend by default,
@@ -352,9 +353,11 @@ sub init {
     } elsif ( ! defined $self->{log_level} ) {
         $self->{log_level} = $DEFAULT_LOG_LEVEL;
     }
-    $self->{canonical} //= $DEFAULT_CANONICAL;
-    $self->{encoding}  //= $DEFAULT_ENCODING;
-    $self->{hooks}     //= { before => [], };
+    $self->{canonical} = $self->{canonical} ? $self->{canonical} : $DEFAULT_CANONICAL;
+    $self->{encoding}  = $self->{encoding} ? $self->{encoding} : $DEFAULT_ENCODING;
+    $self->{hooks}     = $self->{hooks} ? $self->{hooks} : { before => [], proxy => [], };
+    $self->{hooks}->{before} = $self->{hooks}->{before} ? $self->{hooks}->{before} : [];
+    $self->{hooks}->{proxy} = $self->{hooks}->{proxy} ? $self->{hooks}->{proxy} : [];
     if ( exists $self->{file} ) {
         my $ref = ref $self->{file};
         if ( $ref && $ref ne 'GLOB' ) {
