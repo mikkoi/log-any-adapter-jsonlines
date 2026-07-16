@@ -1,7 +1,7 @@
 package Log::Any::Adapter::JSONLines;
 use strict;
 use warnings;
-use 5.008_006;
+use 5.014;
 
 # ABSTRACT: One-line JSON logging of arbitrary structured data in JSON Lines format.
 
@@ -77,7 +77,7 @@ alter properties, for example, mask values.
 
 =head2 Perl Version
 
-Required perl: 5.8.6 or above.
+Required perl: 5.14 or above.
 
 This module uses L<JSON> (version 4.10 at the point of writing this document).
 JSON uses L<JSON::XS> as its backend by default,
@@ -226,7 +226,7 @@ Other special cases are:
 Results with:
 
     {"messages":[1,2,3,4,5]}
-    {"message":"Lastname, Firstname"}
+    {"messages":["Lastname, Firstname"]}
     {"messages":["Person:","Lastname, Firstname"]}
 
     {"nr":"12345","user":"Johnson"}
@@ -354,7 +354,8 @@ sub init {
     }
     $self->{canonical} //= $DEFAULT_CANONICAL;
     $self->{encoding}  //= $DEFAULT_ENCODING;
-    $self->{hooks}     //= { before => [], };
+    $self->{hooks}          //= {};
+    $self->{hooks}{before}  //= [];
     if ( exists $self->{file} ) {
         my $ref = ref $self->{file};
         if ( $ref && $ref ne 'GLOB' ) {
