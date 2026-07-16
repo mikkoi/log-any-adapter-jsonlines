@@ -5,7 +5,7 @@ use 5.008_001;
 
 # ABSTRACT: One-line JSON logging of arbitrary structured data in JSON Lines format.
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 use Carp qw( croak );
 use JSON;
